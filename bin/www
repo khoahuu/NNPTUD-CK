@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+const http = require("http");
+const app = require("../app");
+const { initializeDatabase } = require("../utils/initDb");
+
+const port = process.env.PORT || 3000;
+app.set("port", port);
+
+const server = http.createServer(app);
+
+async function start() {
+  try {
+    await initializeDatabase();
+    server.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to initialize database:", error.message);
+    process.exit(1);
+  }
+}
+
+start();
