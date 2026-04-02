@@ -21,37 +21,15 @@ const getBook = asyncHandler(async (req, res, next) => {
 });
 
 const createBookController = asyncHandler(async (req, res, next) => {
-  const { title, author, price, stock, category_id, image_url, description } = req.body;
-  if (!title || !author || price === undefined) {
-    return next(createError(400, "title, author, price are required"));
-  }
-  const id = await createBook({
-    title,
-    author,
-    price,
-    stock,
-    category_id,
-    image_url,
-    description,
-  });
+  const { title, author_id, price, stock, category_id, image_url, description } = req.body;
+  const id = await createBook({ title, author_id, price, stock, category_id, image_url, description });
   const book = await getBookById(id);
   res.status(201).json({ success: true, data: book });
 });
 
 const updateBookController = asyncHandler(async (req, res, next) => {
-  const { title, author, price, stock, category_id, image_url, description } = req.body;
-  if (!title || !author || price === undefined) {
-    return next(createError(400, "title, author, price are required"));
-  }
-  const ok = await updateBookById(req.params.id, {
-    title,
-    author,
-    price,
-    stock,
-    category_id,
-    image_url,
-    description,
-  });
+  const { title, author_id, price, stock, category_id, image_url, description } = req.body;
+  const ok = await updateBookById(req.params.id, { title, author_id, price, stock, category_id, image_url, description });
   if (!ok) return next(createError(404, "Book not found"));
   const book = await getBookById(req.params.id);
   res.json({ success: true, data: book });
@@ -60,7 +38,6 @@ const updateBookController = asyncHandler(async (req, res, next) => {
 const uploadBookCover = asyncHandler(async (req, res, next) => {
   if (!req.file) return next(createError(400, "Image file is required"));
   const { bookId } = req.body;
-  if (!bookId) return next(createError(400, "bookId is required"));
   const book = await getBookById(bookId);
   if (!book) return next(createError(404, "Book not found"));
 

@@ -10,7 +10,6 @@ const getMyWishlist = asyncHandler(async (req, res) => {
 
 const addToWishlist = asyncHandler(async (req, res, next) => {
   const { bookId } = req.body;
-  if (!bookId) return next(createError(400, "bookId is required"));
 
   const book = await getBookById(bookId);
   if (!book) return next(createError(404, "Book not found"));
@@ -22,7 +21,6 @@ const addToWishlist = asyncHandler(async (req, res, next) => {
 
 const removeFromWishlist = asyncHandler(async (req, res, next) => {
   const { bookId } = req.params;
-  if (!bookId) return next(createError(400, "bookId is required"));
 
   const isRemoved = await removeWishlist(req.user.id, bookId);
   if (!isRemoved) return next(createError(404, "Book not found in wishlist"));

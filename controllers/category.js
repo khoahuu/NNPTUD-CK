@@ -15,7 +15,6 @@ const listCategories = asyncHandler(async (req, res) => {
 
 const createCategoryController = asyncHandler(async (req, res, next) => {
   const { name, description } = req.body;
-  if (!name) return next(createError(400, "name is required"));
   const id = await createCategory({ name, description });
   const category = await getCategoryById(id);
   res.status(201).json({ success: true, data: category });
@@ -23,7 +22,6 @@ const createCategoryController = asyncHandler(async (req, res, next) => {
 
 const updateCategoryController = asyncHandler(async (req, res, next) => {
   const { name, description } = req.body;
-  if (!name) return next(createError(400, "name is required"));
   const ok = await updateCategoryById(req.params.id, { name, description });
   if (!ok) return next(createError(404, "Category not found"));
   const category = await getCategoryById(req.params.id);

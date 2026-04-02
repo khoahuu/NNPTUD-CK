@@ -16,9 +16,7 @@ const listReviewsByBook = asyncHandler(async (req, res) => {
 
 const createReviewController = asyncHandler(async (req, res, next) => {
   const { book_id, rating, comment } = req.body;
-  if (!book_id || !rating) return next(createError(400, "book_id and rating are required"));
   const score = Number(rating);
-  if (score < 1 || score > 5) return next(createError(400, "rating must be between 1 and 5"));
 
   const book = await getBookById(book_id);
   if (!book) return next(createError(404, "Book not found"));
@@ -35,9 +33,7 @@ const createReviewController = asyncHandler(async (req, res, next) => {
 
 const updateReviewController = asyncHandler(async (req, res, next) => {
   const { rating, comment } = req.body;
-  if (!rating) return next(createError(400, "rating is required"));
   const score = Number(rating);
-  if (score < 1 || score > 5) return next(createError(400, "rating must be between 1 and 5"));
 
   const review = await getReviewById(req.params.id);
   if (!review) return next(createError(404, "Review not found"));

@@ -5,6 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const path = require("path");
 
+const authorRoutes = require("./routes/author");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
@@ -17,7 +18,12 @@ const { notFoundHandler, errorHandler } = require("./utils/error");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    credentials: true,
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +33,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Bookstore API is running" });
 });
 
+app.use("/authors", authorRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/categories", categoryRoutes);

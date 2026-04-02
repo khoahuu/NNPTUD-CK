@@ -8,9 +8,6 @@ const { createUser, findUserByEmail, findUserById } = require("../schemas/user")
 
 const register = asyncHandler(async (req, res, next) => {
   const { name, email, password, role } = req.body;
-  if (!name || !email || !password) {
-    return next(createError(400, "name, email, password are required"));
-  }
 
   const existed = await findUserByEmail(email);
   if (existed) {
@@ -26,9 +23,6 @@ const register = asyncHandler(async (req, res, next) => {
 
 const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    return next(createError(400, "email and password are required"));
-  }
 
   const user = await findUserByEmail(email);
   if (!user) {
@@ -56,23 +50,40 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 const googleLogin = asyncHandler(async (req, res, next) => {
-  const { idToken } = req.body;
-  if (!idToken) {
-    return next(createError(400, "idToken is required"));
+  const { idToken, accessToken } = req.body;
+  if (!idToken && !accessToken) {
+    return next(createError(400, "idToken or accessToken is required"));
   }
 
-  let ticket;
-  try {
-    ticket = await client.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-  } catch (error) {
-    return next(createError(401, "Invalid Google ID token"));
-  }
+  let email, name;
 
-  const payload = ticket.getPayload();
-  const { email, name } = payload;
+  if (accessToken) {
+    // Dùng access_token để lấy thông tin user từ Google
+    const fetch = (await import("node-fetch")).default;
+    const googleRes = await fetch(
+      `https://www.googleapis.com/oauth2/v3/userinfo`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    if (!googleRes.ok) {
+      return next(createError(401, "Invalid Google access token"));
+    }
+    const profile = await googleRes.json();
+    email = profile.email;
+    name = profile.name;
+  } else {
+    let ticket;
+    try {
+      ticket = await client.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+    } catch (error) {
+      return next(createError(401, "Invalid Google ID token"));
+    }
+    const payload = ticket.getPayload();
+    email = payload.email;
+    name = payload.name;
+  }
 
   if (!email) {
     return next(createError(400, "Google account does not have an email"));

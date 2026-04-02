@@ -8,15 +8,18 @@ const {
   removeUser,
 } = require("../controllers/user");
 const { requireAuth, requireRole } = require("../utils/auth");
+const validate = require("../utils/validate");
+const { userUpdateValidator } = require("../validators/index");
+const { updateProfileValidator } = require("../validators/auth");
 
 const router = express.Router();
 
 router.get("/me", requireAuth, getMyProfile);
-router.patch("/me", requireAuth, updateMyProfile);
+router.patch("/me", requireAuth, updateProfileValidator, validate, updateMyProfile);
 
 router.get("/", requireAuth, requireRole("admin"), listUsers);
 router.get("/:id", requireAuth, requireRole("admin"), getUserById);
-router.patch("/:id", requireAuth, requireRole("admin"), updateUser);
+router.patch("/:id", requireAuth, requireRole("admin"), userUpdateValidator, validate, updateUser);
 router.delete("/:id", requireAuth, requireRole("admin"), removeUser);
 
 module.exports = router;

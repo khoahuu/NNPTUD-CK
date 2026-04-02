@@ -16,7 +16,6 @@ const {
 
 const createOrder = asyncHandler(async (req, res, next) => {
   const { shipping_address } = req.body;
-  if (!shipping_address) return next(createError(400, "shipping_address is required"));
 
   const cart = await getCartDetailByUserId(req.user.id);
   if (!cart.items.length) return next(createError(400, "Cart is empty"));
@@ -48,7 +47,13 @@ const createOrder = asyncHandler(async (req, res, next) => {
 
 const listMyOrders = asyncHandler(async (req, res) => {
   const orders = await getOrdersByUserId(req.user.id);
-  res.json({ success: true, data: orders });
+  const ordersWithItems = await Promise.all(
+    orders.map(async (order) => ({
+      ...order,
+      items: await getOrderItems(order.id),
+    }))
+  );
+  res.json({ success: true, data: ordersWithItems });
 });
 
 const listOrders = asyncHandler(async (req, res) => {
@@ -58,10 +63,6 @@ const listOrders = asyncHandler(async (req, res) => {
 
 const changeOrderStatus = asyncHandler(async (req, res, next) => {
   const { status } = req.body;
-  const allowed = ["pending", "confirmed", "shipping", "completed", "cancelled"];
-  if (!allowed.includes(status)) {
-    return next(createError(400, "Invalid order status"));
-  }
   const ok = await updateOrderStatus(req.params.id, status);
   if (!ok) return next(createError(404, "Order not found"));
   const order = await getOrderById(req.params.id);

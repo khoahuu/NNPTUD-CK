@@ -9,6 +9,13 @@ function notFoundHandler(req, res, next) {
 }
 
 function errorHandler(err, req, res, next) {
+  // MySQL foreign key constraint error
+  if (err.code === "ER_ROW_IS_REFERENCED_2" || err.errno === 1451) {
+    return res.status(409).json({
+      success: false,
+      message: "Không thể xóa vì dữ liệu này đang được sử dụng ở nơi khác.",
+    });
+  }
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
     success: false,

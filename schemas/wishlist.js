@@ -3,9 +3,10 @@ const pool = require("../utils/db");
 async function getWishlistByUserId(userId) {
   const [items] = await pool.query(
     `
-      SELECT w.id, w.book_id, w.created_at, b.title, b.price, b.image_url, b.author
+      SELECT w.id, w.book_id, w.created_at, b.title, b.price, b.image_url, a.name AS author
       FROM wishlists w
       JOIN books b ON b.id = w.book_id
+      LEFT JOIN authors a ON a.id = b.author_id
       WHERE w.user_id = ?
       ORDER BY w.id DESC
     `,

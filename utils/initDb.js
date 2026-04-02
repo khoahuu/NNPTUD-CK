@@ -14,6 +14,16 @@ async function initializeDatabase() {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS authors (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL UNIQUE,
+      bio TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS categories (
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(150) NOT NULL UNIQUE,
@@ -27,14 +37,18 @@ async function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS books (
       id INT AUTO_INCREMENT PRIMARY KEY,
       title VARCHAR(255) NOT NULL,
-      author VARCHAR(255) NOT NULL,
+      author_id INT,
       price DECIMAL(10,2) NOT NULL,
       stock INT NOT NULL DEFAULT 0,
       category_id INT,
       image_url VARCHAR(255),
       description TEXT,
+      deleted_at TIMESTAMP NULL DEFAULT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      CONSTRAINT fk_books_author
+        FOREIGN KEY (author_id) REFERENCES authors(id)
+        ON DELETE SET NULL,
       CONSTRAINT fk_books_category
         FOREIGN KEY (category_id) REFERENCES categories(id)
         ON DELETE SET NULL
