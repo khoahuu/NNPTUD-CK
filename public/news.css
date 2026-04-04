@@ -1,0 +1,132 @@
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --primary: #2a4d8f;
+  --primary-soft: #e5efff;
+  --text: #222222;
+  --muted: #5f6d7a;
+  --border: #d7dbe4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.hero {
+  background: linear-gradient(135deg, #2a4d8f 0%, #5f7bd8 100%);
+  color: white;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.hero p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.news-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.news-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.news-card h3 {
+  margin: 0 0 0.75rem;
+}
+
+.news-card p {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+}
+
+.news-card .meta {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.news-card button {
+  border: none;
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.news-detail-section {
+  margin-top: 2rem;
+}
+
+.news-detail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.news-detail h2 {
+  margin-top: 0;
+}
+
+.news-detail img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 1rem 0;
+}
+
+.news-detail .meta {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  margin-bottom: 1rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+footer {
+  padding: 1.5rem 0;
+  color: var(--muted);
+  text-align: center;
+}
