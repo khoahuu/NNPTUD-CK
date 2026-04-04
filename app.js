@@ -14,6 +14,7 @@ const cartRoutes = require("./routes/cart");
 const orderRoutes = require("./routes/order");
 const reviewRoutes = require("./routes/review");
 const wishlistRoutes = require("./routes/wishlist");
+const couponRoutes = require("./routes/coupon");
 const { notFoundHandler, errorHandler } = require("./utils/error");
 
 const app = express();
@@ -42,6 +43,7 @@ app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/wishlists", wishlistRoutes);
+app.use("/coupons", couponRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
