@@ -1,6 +1,7 @@
 const asyncHandler = require("../utils/asyncHandler");
 const { createError } = require("../utils/error");
 const { getBookById } = require("../schemas/book");
+const { findUserById } = require("../schemas/user");
 const {
   getCartDetailByUserId,
   clearCart,
@@ -13,6 +14,11 @@ const {
   getOrderItems,
   updateOrderStatus,
 } = require("../schemas/order");
+const {
+  sendOrderNotification,
+  notifyAdminNewOrder,
+  sendOrderStatusNotification,
+} = require("../utils/notificationHelper");
 
 const createOrder = asyncHandler(async (req, res, next) => {
   const { shipping_address } = req.body;
@@ -42,6 +48,12 @@ const createOrder = asyncHandler(async (req, res, next) => {
   await clearCart(cart.cart.id);
   const order = await getOrderById(orderId);
   const items = await getOrderItems(orderId);
+  
+  // Send notifications
+  await sendOrderNotification(req.user.id, orderId);
+  const user = await findUserById(req.user.id);
+  await notifyAdminNewOrder(orderId, user.name);
+  
   res.status(201).json({ success: true, data: { ...order, items } });
 });
 
@@ -66,6 +78,10 @@ const changeOrderStatus = asyncHandler(async (req, res, next) => {
   const ok = await updateOrderStatus(req.params.id, status);
   if (!ok) return next(createError(404, "Order not found"));
   const order = await getOrderById(req.params.id);
+  
+  // Send notification to user about status change
+  await sendOrderStatusNotification(order.user_id, req.params.id, status);
+  
   res.json({ success: true, data: order });
 });
 
