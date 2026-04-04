@@ -5,22 +5,16 @@ const {
   listMyNotifications,
   getUnreadCount,
   markAsRead,
+  markAllAsRead,
   deleteNotificationController,
 } = require("../controllers/notification");
 
-// Middleware xác thực cho tất cả route
 router.use(requireAuth);
 
-// GET: Lấy danh sách thông báo của user
 router.get("/", listMyNotifications);
-
-// GET: Lấy số lượng thông báo chưa đọc
-router.get("/unread-count", getUnreadCount);
-
-// PUT: Đánh dấu thông báo đã đọc
-router.put("/:id/read", markAsRead);
-
-// DELETE: Xóa thông báo
+router.get("/unread/count", getUnreadCount);
+router.patch("/read/all", markAllAsRead);
+router.patch("/:id/read", markAsRead);
 router.delete("/:id", deleteNotificationController);
 
 module.exports = router;

@@ -52,6 +52,14 @@ async function getNotificationById(notificationId) {
   return rows[0] || null;
 }
 
+async function markAllNotificationsAsRead(userId) {
+  const [result] = await pool.query(
+    `UPDATE notifications SET is_read = true WHERE user_id = ? AND is_read = false`,
+    [userId]
+  );
+  return result.affectedRows;
+}
+
 async function deleteNotification(notificationId) {
   const [result] = await pool.query(
     `DELETE FROM notifications WHERE id = ?`,
@@ -67,4 +75,5 @@ module.exports = {
   markNotificationAsRead,
   getNotificationById,
   deleteNotification,
+  markAllNotificationsAsRead,
 };
