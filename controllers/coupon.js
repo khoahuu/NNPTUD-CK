@@ -11,6 +11,13 @@ const {
   deleteCouponById,
 } = require("../schemas/coupon");
 
+// Helper function to convert ISO datetime to MySQL format (YYYY-MM-DD HH:MM:SS)
+const formatDateForMySQL = (isoDateString) => {
+  if (!isoDateString) return null;
+  // Convert ISO format (2026-04-24T17:00:00.000Z) to MySQL format (2026-04-24 17:00:00)
+  return isoDateString.slice(0, 19).replace('T', ' ');
+};
+
 const listCoupons = asyncHandler(async (req, res) => {
   console.log("GET /coupons called");
   const coupons = await getCoupons();
@@ -53,7 +60,7 @@ const createCouponController = asyncHandler(async (req, res, next) => {
     discount_value,
     min_purchase,
     max_uses,
-    expiry_date,
+    expiry_date: formatDateForMySQL(expiry_date),
     is_active,
     description,
   });
@@ -80,7 +87,7 @@ const updateCouponController = asyncHandler(async (req, res, next) => {
     discount_value,
     min_purchase,
     max_uses,
-    expiry_date,
+    expiry_date: formatDateForMySQL(expiry_date),
     is_active,
     description,
   });
