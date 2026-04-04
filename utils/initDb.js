@@ -119,19 +119,6 @@ async function initializeDatabase() {
   `);
 
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS news (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      title VARCHAR(255) NOT NULL,
-      summary TEXT,
-      content TEXT NOT NULL,
-      image_url VARCHAR(255),
-      published_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )
-  `);
-
-  await pool.query(`
     CREATE TABLE IF NOT EXISTS reviews (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,

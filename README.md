@@ -110,18 +110,6 @@ Authorization: Bearer <token>
 | GET    | /orders               | admin |
 | PATCH  | /orders/:id/status    | admin |
 
-### News / Tin tức
-| Method | Endpoint      | Quyền  |
-|--------|---------------|--------|
-| GET    | /news         | public |
-| GET    | /news/:id     | public |
-| POST   | /news         | admin  |
-| PATCH  | /news/:id     | admin  |
-| DELETE | /news/:id     | admin  |
-
-Frontend tĩnh:
-- truy cập `http://localhost:3000/news.html`
-
 ### Reviews
 | Method | Endpoint              | Quyền          |
 |--------|-----------------------|----------------|
