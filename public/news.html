@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tin tức sách</title>
+  <link rel="stylesheet" href="news.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <h1>Tin tức sách</h1>
+      <p>Đọc tin mới nhất, sự kiện ra mắt sách và review nhanh ngay tại đây.</p>
+    </div>
+  </header>
+  <main class="container">
+    <section class="news-list-section">
+      <h2>Bài viết mới nhất</h2>
+      <div id="news-list" class="news-list"></div>
+    </section>
+
+    <section id="news-detail-section" class="news-detail-section hidden">
+      <button id="back-button" class="back-button">← Quay lại danh sách</button>
+      <article id="news-detail" class="news-detail"></article>
+    </section>
+  </main>
+
+  <footer>
+    <p>API được cung cấp từ backend Node.js. Quản trị viên có thể quản lý tin tức qua API.</p>
+  </footer>
+
+  <script src="news.js"></script>
+</body>
+</html>
