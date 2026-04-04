@@ -9,14 +9,30 @@ async function createNews({ title, summary, content, image_url, published_at }) 
   return result.insertId;
 }
 
-async function getAllNews() {
-  const [rows] = await pool.query(
-    `SELECT id, title, summary, image_url, published_at
+async function getAllNews(limit = null, offset = 0) {
+  if (limit && !Number.isInteger(limit)) limit = null;
+  if (!Number.isInteger(offset)) offset = 0;
+
+  let query = `SELECT id, title, summary, image_url, published_at
      FROM news
      WHERE published_at <= NOW()
-     ORDER BY published_at DESC`
-  );
+     ORDER BY published_at DESC`;
+  
+  if (limit) {
+    query += ` LIMIT ? OFFSET ?`;
+    const [rows] = await pool.query(query, [limit, offset]);
+    return rows;
+  }
+
+  const [rows] = await pool.query(query);
   return rows;
+}
+
+async function getNewsCount() {
+  const [rows] = await pool.query(
+    `SELECT COUNT(*) as total FROM news WHERE published_at <= NOW()`
+  );
+  return rows[0]?.total || 0;
 }
 
 async function getNewsById(id) {
@@ -73,4 +89,5 @@ module.exports = {
   getNewsById,
   updateNewsById,
   deleteNewsById,
+  getNewsCount,
 };

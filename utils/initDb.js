@@ -152,6 +152,24 @@ async function initializeDatabase() {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS coupons (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      code VARCHAR(50) NOT NULL UNIQUE,
+      discount_type ENUM('percentage', 'fixed') NOT NULL,
+      discount_value DECIMAL(10,2) NOT NULL,
+      min_purchase DECIMAL(10,2) DEFAULT 0,
+      max_uses INT DEFAULT NULL,
+      used_count INT DEFAULT 0,
+      expiry_date DATETIME DEFAULT NULL,
+      is_active BOOLEAN DEFAULT TRUE,
+      description TEXT,
+      deleted_at TIMESTAMP NULL DEFAULT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS notifications (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,

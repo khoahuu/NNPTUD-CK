@@ -22,14 +22,16 @@ const getBook = asyncHandler(async (req, res, next) => {
 
 const createBookController = asyncHandler(async (req, res, next) => {
   const { title, author_id, price, stock, category_id, image_url, description } = req.body;
-  const id = await createBook({ title, author_id, price, stock, category_id, image_url, description });
+  const finalImageUrl = req.file ? `/uploads/${req.file.filename}` : image_url;
+  const id = await createBook({ title, author_id, price, stock, category_id, image_url: finalImageUrl, description });
   const book = await getBookById(id);
   res.status(201).json({ success: true, data: book });
 });
 
 const updateBookController = asyncHandler(async (req, res, next) => {
   const { title, author_id, price, stock, category_id, image_url, description } = req.body;
-  const ok = await updateBookById(req.params.id, { title, author_id, price, stock, category_id, image_url, description });
+  const finalImageUrl = req.file ? `/uploads/${req.file.filename}` : image_url;
+  const ok = await updateBookById(req.params.id, { title, author_id, price, stock, category_id, image_url: finalImageUrl, description });
   if (!ok) return next(createError(404, "Book not found"));
   const book = await getBookById(req.params.id);
   res.json({ success: true, data: book });

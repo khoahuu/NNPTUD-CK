@@ -22,7 +22,16 @@ const newsValidator = [
   body("title").notEmpty().withMessage("title is required"),
   body("content").notEmpty().withMessage("content is required"),
   body("summary").optional().isString(),
-  body("image_url").optional().isURL().withMessage("image_url must be a valid URL"),
+  body("image_url")
+    .optional()
+    .custom((value) => {
+      if (value && value.trim() !== "") {
+        if (!/(https?:\/\/.+)/.test(value)) {
+          throw new Error("image_url must be a valid URL");
+        }
+      }
+      return true;
+    }),
   body("published_at").optional().isISO8601().withMessage("published_at must be a valid date"),
 ];
 
@@ -30,7 +39,16 @@ const newsUpdateValidator = [
   body("title").optional().notEmpty().withMessage("title cannot be empty"),
   body("content").optional().notEmpty().withMessage("content cannot be empty"),
   body("summary").optional().isString(),
-  body("image_url").optional().isURL().withMessage("image_url must be a valid URL"),
+  body("image_url")
+    .optional()
+    .custom((value) => {
+      if (value && value.trim() !== "") {
+        if (!/(https?:\/\/.+)/.test(value)) {
+          throw new Error("image_url must be a valid URL");
+        }
+      }
+      return true;
+    }),
   body("published_at").optional().isISO8601().withMessage("published_at must be a valid date"),
 ];
 

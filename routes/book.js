@@ -16,8 +16,8 @@ const router = express.Router();
 
 router.get("/", listBooks);
 router.get("/:id", getBook);
-router.post("/", requireAuth, requireRole("admin"), bookValidator, validate, createBookController);
-router.patch("/:id", requireAuth, requireRole("admin"), bookValidator, validate, updateBookController);
+router.post("/", requireAuth, requireRole("admin"), upload.single("image"), bookValidator, validate, createBookController);
+router.patch("/:id", requireAuth, requireRole("admin"), upload.single("image"), bookValidator, validate, updateBookController);
 router.delete("/:id", requireAuth, requireRole("admin"), deleteBookController);
 router.post(
   "/upload-cover",
