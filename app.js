@@ -14,7 +14,6 @@ const cartRoutes = require("./routes/cart");
 const orderRoutes = require("./routes/order");
 const reviewRoutes = require("./routes/review");
 const wishlistRoutes = require("./routes/wishlist");
-const newsRoutes = require("./routes/news");
 const notificationRoutes = require("./routes/notification");
 const { notFoundHandler, errorHandler } = require("./utils/error");
 
@@ -30,7 +29,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.json({ message: "Bookstore API is running" });
@@ -45,7 +43,6 @@ app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/wishlists", wishlistRoutes);
-app.use("/news", newsRoutes);
 app.use("/notifications", notificationRoutes);
 
 app.use(notFoundHandler);
