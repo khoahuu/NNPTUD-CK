@@ -8,6 +8,7 @@ const {
   updateReviewById,
   deleteReviewById,
 } = require("../schemas/review");
+const { sendReviewNotification } = require("../utils/notificationHelper");
 
 const listReviewsByBook = asyncHandler(async (req, res) => {
   const rows = await getReviewsByBookId(req.params.bookId);
@@ -28,6 +29,10 @@ const createReviewController = asyncHandler(async (req, res, next) => {
     comment,
   });
   const review = await getReviewById(id);
+  
+  // Send notification
+  await sendReviewNotification(req.user.id, Number(book_id), book.title);
+  
   res.status(201).json({ success: true, data: review });
 });
 
