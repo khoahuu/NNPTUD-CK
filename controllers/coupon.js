@@ -125,14 +125,26 @@ const applyCoupon = asyncHandler(async (req, res, next) => {
   const { couponId, totalPrice } = req.body;
 
   if (!couponId) return next(createError(400, "Coupon ID is required"));
-  if (!totalPrice) return next(createError(400, "Total price is required"));
+  if (totalPrice === undefined) return next(createError(400, "Total price is required"));
 
   const coupon = await getCouponById(couponId);
   if (!coupon) return next(createError(404, "Coupon not found"));
+  if (!coupon.is_active) return next(createError(400, "Coupon is not active"));
 
-  await incrementCouponUsage(couponId);
+  if (coupon.expiry_date && new Date(coupon.expiry_date) < new Date()) {
+    return next(createError(400, "Coupon has expired"));
+  }
 
-  // Calculate discount
+  if (coupon.max_uses && coupon.used_count >= coupon.max_uses) {
+    return next(createError(400, "Coupon usage limit reached"));
+  }
+
+  if (coupon.min_purchase && totalPrice < coupon.min_purchase) {
+    return next(
+      createError(400, `Minimum purchase amount is ${coupon.min_purchase}`)
+    );
+  }
+
   let discountAmount = 0;
   if (coupon.discount_type === "percentage") {
     discountAmount = Math.floor((totalPrice * coupon.discount_value) / 100);
@@ -140,12 +152,15 @@ const applyCoupon = asyncHandler(async (req, res, next) => {
     discountAmount = coupon.discount_value;
   }
 
+  await incrementCouponUsage(couponId);
+
   res.json({
     success: true,
     data: {
-      couponId: couponId,
+      couponId,
       code: coupon.code,
-      discountAmount: discountAmount,
+      discountAmount,
+      finalPrice: Math.max(0, totalPrice - discountAmount),
     },
   });
 });

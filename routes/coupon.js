@@ -10,7 +10,7 @@ const {
 } = require("../controllers/coupon");
 const { requireAuth, requireRole } = require("../utils/auth");
 const validate = require("../utils/validate");
-const { couponValidator, validateCouponCodeValidator } = require("../validators/coupon");
+const { couponValidator, validateCouponCodeValidator, applyCouponValidator } = require("../validators/coupon");
 
 const router = express.Router();
 
@@ -25,6 +25,6 @@ router.patch("/:id", requireAuth, requireRole("admin"), couponValidator, validat
 router.delete("/:id", requireAuth, requireRole("admin"), deleteCouponController);
 
 // User routes
-router.post("/apply", requireAuth, applyCoupon);
+router.post("/apply", requireAuth, applyCouponValidator, validate, applyCoupon);
 
 module.exports = router;

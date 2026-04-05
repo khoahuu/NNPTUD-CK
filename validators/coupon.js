@@ -48,4 +48,18 @@ const validateCouponCodeValidator = [
     .withMessage("Total price must be a non-negative number"),
 ];
 
-module.exports = { couponValidator, validateCouponCodeValidator };
+const applyCouponValidator = [
+  body("couponId")
+    .notEmpty()
+    .withMessage("Coupon ID is required")
+    .toInt()
+    .isInt({ min: 1 })
+    .withMessage("Coupon ID must be a positive integer"),
+  body("totalPrice")
+    .notEmpty()
+    .withMessage("Total price is required")
+    .isFloat({ min: 0 })
+    .withMessage("Total price must be a non-negative number"),
+];
+
+module.exports = { couponValidator, validateCouponCodeValidator, applyCouponValidator };
